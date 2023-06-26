@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useHistory, useLocation } from "react-router-dom";
-import { readDeck, updateDeck } from "../utils/api";
+import { Link, useParams, useHistory } from "react-router-dom";
+import { readDeck, createCard } from "../utils/api";
 import ErrorMessage from "../Layout/ErrorMessage";
 import * as Icon from "react-bootstrap-icons";
-export const DeckEdit = () => {
+export const AddCard = () => {
   const [deck, setDeck] = useState({});
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(true);
   const { deckId } = useParams();
-  const history = useHistory();
+
+  const initialFromData = {
+    front: "",
+    back: "",
+  };
+
+  const [card, setCard] = useState({ ...initialFromData });
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -29,14 +35,14 @@ export const DeckEdit = () => {
 
   const handleChange = ({ target }) => {
     const value = target.value;
-    setDeck({ ...deck, [target.name]: value });
+    setCard({ ...card, [target.name]: value });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // console.log("submitted", deck);
-    await updateDeck(deck);
-    history.push(`/decks/${deckId}`);
+    console.log("new card", card);
+    await createCard(deckId, card);
+    setCard({ ...initialFromData });
   };
 
   return (
@@ -51,36 +57,36 @@ export const DeckEdit = () => {
           <li className="breadcrumb-item">
             <Link to={`/decks/${deckId}`}>{deck.name}</Link>
           </li>
-          {/* here deck name will change instantaneously, how to resolve? */}
           <li className="breadcrumb-item active" aria-current="page">
-            Edit Deck
+            Add Card
           </li>
         </ol>
       </nav>
       <div>
-        <h3>Edit Deck</h3>
-        <form name="deckEdit" onSubmit={handleSubmit}>
+        <h3>{deck.name}: Add Card</h3>
+        <form name="addCard" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="name">Name</label>
+            <label htmlFor="front">Front</label>
             <br />
-            <input
-              id="name"
+            <textarea
+              id="front"
               type="text"
-              name="name"
-              defaultValue={deck.name}
+              name="front"
+              value={card.front}
+              placeholder="Front side of Card"
               onChange={handleChange}
               required
-              style={{ width: "100%" }}
             />
           </div>
           <div>
-            <label htmlFor="description">Description</label>
+            <label htmlFor="back">Back</label>
             <br />
             <textarea
-              id="description"
+              id="back"
               type="text"
-              name="description"
-              defaultValue={deck.description}
+              name="back"
+              value={card.back}
+              placeholder="Back side of Card"
               onChange={handleChange}
               required
             />
@@ -88,11 +94,11 @@ export const DeckEdit = () => {
           <div className="buttonGroup">
             <button type="button" className="btn btn-secondary">
               <Link className="linkColor" to={`/decks/${deckId}`}>
-                Cancel
+                Done
               </Link>
             </button>
             <button type="submit" className="btn btn-primary">
-              Submit
+              Save
             </button>
           </div>
         </form>
@@ -101,4 +107,4 @@ export const DeckEdit = () => {
   );
 };
 
-export default DeckEdit;
+export default AddCard;

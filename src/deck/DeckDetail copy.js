@@ -7,6 +7,7 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
+import * as Icon from "react-bootstrap-icons";
 import { readDeck, deleteDeck } from "../utils/api";
 import ErrorMessage from "../Layout/ErrorMessage";
 import CardList from "../card/CardList";
@@ -46,28 +47,52 @@ export const DeckDetail = () => {
       history.push("/");
     }
   };
-  console.log("deck.cards", deck.cards);
+
   return (
     <section>
-      <h3>Add breadcrumb here </h3>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link to={`/`}>
+              <Icon.HouseDoorFill /> Home
+            </Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {deck.name}
+          </li>
+        </ol>
+      </nav>
       <div>
         <h3>{deck.name}</h3>
         <p>{deck.description}</p>
-        <button>
-          <Link to={`${url}/edit`}>Edit</Link>
-        </button>
-        <button>
-          <Link to={`${url}/study`}>Study</Link>
-        </button>
-        <button>
-          <Link to={`${url}/cards/new`}>Add Cards</Link>
-        </button>
-        <button className="btn btn-danger" onClick={handleDelete}>
-          Delete
+        <div className="buttonGroup">
+          <button type="button" className="btn btn-secondary">
+            {/* <Link to={`${url}/edit`}> */}
+            <Link className="linkColor" to={`${url}/edit`}>
+              <Icon.Pencil /> Edit
+            </Link>
+          </button>
+          <button type="button" className="btn btn-primary">
+            <Link to={`${url}/study`} style={{ color: "white" }}>
+              <Icon.JournalBookmarkFill /> Study
+            </Link>
+          </button>
+          <button type="button" className="btn btn-primary">
+            <Link className="linkColor" to={`${url}/cards/new`}>
+              <Icon.PlusLg /> Add Cards
+            </Link>
+          </button>
+        </div>
+        <button
+          type="button"
+          className="btn btn-danger trash"
+          onClick={handleDelete}
+        >
+          <Icon.Trash3 />
         </button>
       </div>
       <div>
-        <CardList cards={deck.cards} setDeck={setDeck} />
+        <CardList deck={deck} />
       </div>
     </section>
   );

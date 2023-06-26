@@ -33,7 +33,7 @@ export const CardList = ({ deck }) => {
     <main>
       <h3>Cards</h3>
 
-      <p>{cardList}</p>
+      <div>{cardList}</div>
     </main>
   );
 };

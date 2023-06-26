@@ -3,6 +3,7 @@ import { Link, useParams, useHistory } from "react-router-dom";
 import { readDeck, createCard } from "../utils/api";
 import ErrorMessage from "../Layout/ErrorMessage";
 import * as Icon from "react-bootstrap-icons";
+import CardForm from "./CardForm";
 export const AddCard = () => {
   const [deck, setDeck] = useState({});
   const [error, setError] = useState(undefined);
@@ -64,7 +65,13 @@ export const AddCard = () => {
       </nav>
       <div>
         <h3>{deck.name}: Add Card</h3>
-        <form name="addCard" onSubmit={handleSubmit}>
+        <CardForm
+          card={card}
+          deckId={deckId}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+        />
+        {/* <form name="addCard" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="front">Front</label>
             <br />
@@ -101,7 +108,7 @@ export const AddCard = () => {
               Save
             </button>
           </div>
-        </form>
+        </form> */}
       </div>
     </section>
   );

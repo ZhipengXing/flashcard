@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useHistory, useLocation } from "react-router-dom";
-import { readDeck, updateDeck } from "../utils/api";
+import { Link, useParams, useHistory } from "react-router-dom";
+import { readDeck, readCard, updateCard } from "../utils/api";
 import ErrorMessage from "../Layout/ErrorMessage";
 import * as Icon from "react-bootstrap-icons";
-export const DeckEdit = () => {
+export const EditCard = () => {
   const [deck, setDeck] = useState({});
+  const [card, setCard] = useState({});
   const [error, setError] = useState(undefined);
   const [loading, setLoading] = useState(true);
-  const { deckId } = useParams();
+  const { deckId, cardId } = useParams();
   const history = useHistory();
 
   useEffect(() => {
     const abortController = new AbortController();
     readDeck(deckId, abortController.signal)
       .then(setDeck)
+      .then(() => setLoading(false))
+      .catch(setError);
+    return () => abortController.abort();
+  }, [deckId]);
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    readCard(cardId, abortController.signal)
+      .then(setCard)
       .then(() => setLoading(false))
       .catch(setError);
     return () => abortController.abort();
@@ -29,13 +39,12 @@ export const DeckEdit = () => {
 
   const handleChange = ({ target }) => {
     const value = target.value;
-    setDeck({ ...deck, [target.name]: value });
+    setCard({ ...card, [target.name]: value });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // console.log("submitted", deck);
-    await updateDeck(deck);
+    await updateCard(card);
     history.push(`/decks/${deckId}`);
   };
 
@@ -51,36 +60,34 @@ export const DeckEdit = () => {
           <li className="breadcrumb-item">
             <Link to={`/decks/${deckId}`}>{deck.name}</Link>
           </li>
-          {/* here deck name will change instantaneously, how to resolve? */}
           <li className="breadcrumb-item active" aria-current="page">
-            Edit Deck
+            Edit Card {card.id}
           </li>
         </ol>
       </nav>
       <div>
-        <h3>Edit Deck</h3>
-        <form name="deckEdit" onSubmit={handleSubmit}>
+        <h3>Edit Card</h3>
+        <form name="editCard" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="name">Name</label>
+            <label htmlFor="front">Front</label>
             <br />
-            <input
-              id="name"
+            <textarea
+              id="front"
               type="text"
-              name="name"
-              defaultValue={deck.name}
+              name="front"
+              defaultValue={card.front}
               onChange={handleChange}
               required
-              style={{ width: "100%" }}
             />
           </div>
           <div>
-            <label htmlFor="description">Description</label>
+            <label htmlFor="back">Back</label>
             <br />
             <textarea
-              id="description"
+              id="back"
               type="text"
-              name="description"
-              defaultValue={deck.description}
+              name="back"
+              defaultValue={card.back}
               onChange={handleChange}
               required
             />
@@ -101,4 +108,4 @@ export const DeckEdit = () => {
   );
 };
 
-export default DeckEdit;
+export default EditCard;

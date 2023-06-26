@@ -9,7 +9,10 @@ export const DeckEdit = () => {
   const [loading, setLoading] = useState(true);
   const { deckId } = useParams();
   const history = useHistory();
-
+  const location = useLocation();
+  const { deckName } = location.state;
+  console.log(location);
+  console.log(deck.name);
   useEffect(() => {
     const abortController = new AbortController();
     readDeck(deckId, abortController.signal)

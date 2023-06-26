@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
 import { readDeck, readCard, updateCard } from "../utils/api";
+import CardForm from "./CardForm";
 import ErrorMessage from "../Layout/ErrorMessage";
 import * as Icon from "react-bootstrap-icons";
 export const EditCard = () => {
@@ -67,7 +68,7 @@ export const EditCard = () => {
       </nav>
       <div>
         <h3>Edit Card</h3>
-        <form name="editCard" onSubmit={handleSubmit}>
+        {/* <form name="editCard" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="front">Front</label>
             <br />
@@ -102,7 +103,13 @@ export const EditCard = () => {
               Submit
             </button>
           </div>
-        </form>
+        </form> */}
+        <CardForm
+          card={card}
+          deckId={deckId}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+        />
       </div>
     </section>
   );
